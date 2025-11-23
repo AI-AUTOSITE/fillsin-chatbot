@@ -27,4 +27,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Export types for TypeScript
-export type { Database } from '@/types/supabase';
+//export type { Database } from '@/types/supabase';

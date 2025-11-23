@@ -13,8 +13,10 @@ import type {
   UpdateMenuItemInput,
   MenuFilters,
   MenuCategory,
-  CATEGORY_DISPLAY_NAMES,
 } from '@/types/menu';
+
+// CATEGORY_DISPLAY_NAMES は値なので、通常のインポート
+import { CATEGORY_DISPLAY_NAMES } from '@/types/menu';
 
 // ============================================
 // GET MENU ITEMS

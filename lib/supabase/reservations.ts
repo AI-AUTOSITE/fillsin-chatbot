@@ -47,23 +47,19 @@ export async function checkAvailability(
     }
 
     // 2. Get existing reservations for this date/time
-    const { data: existingReservations, error: reservationsError } = await supabase
-      .from('reservations')
-      .select('party_size')
-      .eq('restaurant_id', restaurant_id)
-      .eq('reservation_date', date)
-      .eq('reservation_time', time)
-      .neq('status', 'cancelled'); // Exclude cancelled reservations
+   const { data: existingReservations, error: reservationsError } = await supabase
+  .from('reservations')
+  .select('party_size')
+  .eq('restaurant_id', restaurant_id)
+  .eq('reservation_date', date)
+  .eq('reservation_time', time)
+  .neq('status', 'cancelled');
 
-    if (reservationsError) {
-      throw reservationsError;
-    }
-
-    // 3. Calculate total booked seats
-    const totalBooked = existingReservations?.reduce(
-      (sum, res) => sum + res.party_size,
-      0
-    ) || 0;
+// 3. Calculate total booked seats
+const totalBooked = (existingReservations || []).reduce(
+  (sum: number, res: { party_size: number }) => sum + res.party_size,
+  0
+);
 
     // 4. Check if new reservation would exceed capacity
     const newTotal = totalBooked + party_size;
@@ -381,10 +377,10 @@ export async function getReservationSummary(
       total_guests: 0,
     };
 
-    data?.forEach((reservation) => {
-      summary.total_guests += reservation.party_size;
-      
-      switch (reservation.status as ReservationStatus) {
+    data?.forEach((reservation: { party_size: number; status: string }) => {
+  summary.total_guests += reservation.party_size;
+  
+  switch (reservation.status as ReservationStatus) {
         case 'confirmed':
         case 'pending':
           summary.confirmed++;

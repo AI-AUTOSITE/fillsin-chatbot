@@ -1,61 +1,71 @@
 /**
- * Input Component
+ * Select Component
  * 
- * Reusable input component with label, error message, and helper text
- * Supports various input types: text, email, phone, number, etc.
+ * Reusable select dropdown with label and error states
  */
 
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export interface SelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   helperText?: string;
+  options: SelectOption[];
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
     {
       className,
-      type = 'text',
       label,
       error,
       helperText,
+      options,
       id,
       ...props
     },
     ref
   ) => {
     // Generate ID if not provided
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
 
     return (
       <div className="w-full">
         {label && (
           <label
-            htmlFor={inputId}
+            htmlFor={selectId}
             className="mb-1.5 block text-sm font-medium text-gray-700"
           >
             {label}
             {props.required && <span className="ml-1 text-red-500">*</span>}
           </label>
         )}
-        
-        <input
+
+        <select
           ref={ref}
-          type={type}
-          id={inputId}
+          id={selectId}
           className={cn(
-            'block w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 transition-colors',
+            'block w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 transition-colors',
             'focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50',
             'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
             error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
             className
           )}
           {...props}
-        />
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
         {error && (
           <p className="mt-1.5 text-sm text-red-600">{error}</p>
@@ -69,6 +79,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+Select.displayName = 'Select';
 
-export { Input };
+export { Select };
